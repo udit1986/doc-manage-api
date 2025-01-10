@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Document } from './documents.entity';
 import { CreateDocumentDto, UpdateDocumentDto } from '../common/dto';
+import { IPaginationOptions } from '../common/utils/types/pagination-options';
 
 @Injectable()
 export class DocumentsService {
@@ -16,8 +17,19 @@ export class DocumentsService {
     return await this.documentRepository.save(document);
   }
 
-  async findAll(): Promise<{ entities: Document[]; total: number }> {
-    return await this.documentRepository.findAndCount();
+  async findManyWithPagination({
+    paginationOptions,
+  }: {
+    paginationOptions: IPaginationOptions;
+  }) {
+    const [entities, total] = await this.documentRepository.findAndCount({
+      skip: (paginationOptions.page - 1) * paginationOptions.limit,
+      take: paginationOptions.limit,
+    });
+    return {
+      total,
+      entities,
+    };
   }
 
   async findOne(id: number): Promise<Document> {

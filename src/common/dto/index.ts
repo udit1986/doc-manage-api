@@ -8,3 +8,5 @@ export * from './ingestion.dto';
 export * from './infinity-pagination-response.dto';
 export * from './query-user.dto';
 export * from './role.dto';
+export * from './query-pagination.dto';
+export * from './create-document-with-file.dto';

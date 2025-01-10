@@ -10,14 +10,17 @@ import {
   UploadedFile,
   HttpCode,
   HttpStatus,
+  Query,
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DocumentsService } from './documents.service';
-import { CreateDocumentDto, UpdateDocumentDto } from '../common/dto';
+import { Document } from './documents.entity';
+import { CreateDocumentDto, CreateDocumentWithFileDto, UpdateDocumentDto, InfinityPaginationResponseDto, QueryPaginationDto } from '../common/dto';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiParam,
   ApiResponse,
   ApiTags,
@@ -25,6 +28,7 @@ import {
 import { Express } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import { infinityPagination } from '../common/utils';
 
 @Controller('api/documents')
 @ApiBearerAuth()
@@ -35,14 +39,24 @@ export class DocumentsController {
   @Post()
   @ApiBody({ type: CreateDocumentDto })
   @ApiResponse({ status: 201, description: 'Document created successfully' })
-  create(@Body() createDocumentDto: CreateDocumentDto) {
-    return this.documentsService.create(createDocumentDto);
+  async create(@Body() createDocumentDto: CreateDocumentDto) {
+    return await this.documentsService.create(createDocumentDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll() {
-    const resp = this.documentsService.findAll();
+  async findAll(
+    @Query() query: QueryPaginationDto,
+  ): Promise<InfinityPaginationResponseDto<Document>> {
+    const page = query?.page ?? 1;
+    const limit = query?.limit ?? 10;
+
+    const resp = await this.documentsService.findManyWithPagination({
+      paginationOptions: {
+        page,
+        limit,
+      },
+    });
     return infinityPagination(resp.entities, resp.total, { page, limit });
   }
 
@@ -50,35 +64,36 @@ export class DocumentsController {
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: 'number', description: 'Document ID' })
   @ApiResponse({ status: 200, description: 'Document found' })
-  findOne(@Param('id') id: number) {
-    return this.documentsService.findOne(id);
+  async findOne(@Param('id') id: number) {
+    return await this.documentsService.findOne(id);
   }
 
   @Patch(':id')
   @ApiParam({ name: 'id', type: 'number', description: 'Document ID' })
   @ApiBody({ type: UpdateDocumentDto })
   @ApiResponse({ status: 200, description: 'Document updated successfully' })
-  update(
+  async update(
     @Param('id') id: number,
     @Body() updateDocumentDto: UpdateDocumentDto,
   ) {
-    return this.documentsService.update(id, updateDocumentDto);
+    return await this.documentsService.update(id, updateDocumentDto);
   }
 
   @Delete(':id')
   @ApiParam({ name: 'id', type: 'number', description: 'Document ID' })
   @ApiResponse({ status: 200, description: 'Document deleted successfully' })
-  remove(@Param('id') id: number) {
-    return this.documentsService.remove(id);
+  async remove(@Param('id') id: number) {
+    return await this.documentsService.remove(id);
   }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  @ApiBody({ type: CreateDocumentDto })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateDocumentWithFileDto })
   @ApiResponse({ status: 201, description: 'File uploaded successfully' })
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Body() createDocumentDto: CreateDocumentDto,
+    @Body() createDocumentDto: CreateDocumentWithFileDto,
   ) {
     // Check file type and size
     if (file.mimetype !== 'text/plain') {
