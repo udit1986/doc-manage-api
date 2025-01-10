@@ -5,3 +5,6 @@ export * from './register.dto';
 export * from './create-document.dto';
 export * from './update-document.dto';
 export * from './ingestion.dto';
+export * from './infinity-pagination-response.dto';
+export * from './query-user.dto';
+export * from './role.dto';
