@@ -2,16 +2,14 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
 } from 'typeorm';
 import { PasswordTransformer } from './password.transformer';
+import { BaseEntity } from '../common/entity/base.entity';
 
 @Entity({
   name: 'users',
 })
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,20 +29,8 @@ export class User {
   })
   password: string;
 
-  @Column({ length: 40 })
+  @Column({ type: 'int', default: 3 })
   role: number;
-
-  @Column({ default: true })
-  isActive: boolean;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
 
   toJSON() {
     const { password, ...self } = this;

@@ -18,8 +18,8 @@ import { InfinityPaginationResponseDto, UpdateUserDto, QueryUserDto } from 'src/
 
 @ApiBearerAuth()
 @Controller('api/users')
-@Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+// @Roles(RoleEnum.admin)
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

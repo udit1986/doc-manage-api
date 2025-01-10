@@ -19,6 +19,6 @@ export default new DataSource({
   username: DB_USERNAME,
   password: DB_PASSWORD,
   database: DB_DATABASE,
-  migrations: [__dirname + '/src/migrations/*{.ts,.js}'],
+  migrations: [__dirname + '/src/db/migrations/*{.ts,.js}'],
   entities: [__dirname + '/src/**/*.entity.{ts,js}'],
 });
