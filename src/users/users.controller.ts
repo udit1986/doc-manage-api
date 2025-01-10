@@ -23,7 +23,7 @@ import {
 @ApiBearerAuth()
 @Controller('api/users')
 @Roles(RoleEnum.admin)
-@UseGuards(AuthGuard(), RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

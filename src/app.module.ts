@@ -25,6 +25,7 @@ import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
         } as TypeOrmModuleAsyncOptions;
       },
     }),
+    ConfigModule,
     AuthModule,
     UsersModule,
     DocumentsModule,
