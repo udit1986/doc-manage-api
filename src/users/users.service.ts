@@ -31,7 +31,10 @@ export class UsersService {
       );
     }
 
-    return await this.userRepository.save({...payload, role: RoleEnum.viewer });
+    return await this.userRepository.save({
+      ...payload,
+      role: RoleEnum.viewer,
+    });
   }
 
   async findManyWithPagination({
@@ -42,7 +45,7 @@ export class UsersService {
     filterOptions?: FilterUserDto | null;
     sortOptions?: SortUserDto[] | null;
     paginationOptions: IPaginationOptions;
-  }): Promise<User[]> {
+  }) {
     const where: FindOptionsWhere<any> = {};
     if (filterOptions?.roles?.length) {
       where.role = filterOptions.roles.map((role) => ({
@@ -50,7 +53,7 @@ export class UsersService {
       }));
     }
 
-    const entities = await this.userRepository.find({
+    const [entities, total] = await this.userRepository.findAndCount({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
       where: where,
@@ -62,7 +65,10 @@ export class UsersService {
         {},
       ),
     });
-    return entities;
+    return {
+      total,
+      entities,
+    };
   }
 
   async findOne(id: number): Promise<User> {
