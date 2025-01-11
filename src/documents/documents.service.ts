@@ -25,6 +25,7 @@ export class DocumentsService {
     const [entities, total] = await this.documentRepository.findAndCount({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      where: { isActive: true },
     });
     return {
       total,
@@ -44,9 +45,12 @@ export class DocumentsService {
     return await this.documentRepository.findOne({ where: { id } });
   }
 
-  async remove(id: number): Promise<boolean> {
+  async remove(id: number, userId: string): Promise<boolean> {
     try {
-      await this.documentRepository.delete(id);
+      const document = await this.findOne(id);
+      document.lastChangedBy = userId;
+      document.isActive = false;
+      await this.update(id, document);
       return true;
     } catch (_error) {
       return false;

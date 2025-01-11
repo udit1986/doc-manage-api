@@ -4,6 +4,20 @@ import { DocumentsService } from './documents.service';
 import { CreateDocumentDto, UpdateDocumentDto } from '../common/dto';
 import { Document } from './documents.entity';
 
+const mockUser = {
+  id: 1,
+  firstName: 'first',
+  lastName: 'last',
+  email: 'first.last@example.com',
+  role: 1,
+  lastChangedBy: 'testUser',
+  createDateTime: new Date(),
+  lastChangedDateTime: new Date(),
+  createdBy: 'testUser',
+  isActive: true,
+  password: 'password',
+};
+
 describe('DocumentsController', () => {
   let controller: DocumentsController;
   let service: DocumentsService;
@@ -56,7 +70,9 @@ describe('DocumentsController', () => {
       const result = { ...mockDocument, ...createDocumentDto };
       jest.spyOn(service, 'create').mockResolvedValue(result);
 
-      await expect(controller.create(createDocumentDto)).resolves.toBe(result);
+      await expect(
+        controller.create(createDocumentDto, mockUser),
+      ).resolves.toBe(result);
     });
   });
 
@@ -65,7 +81,9 @@ describe('DocumentsController', () => {
       const result = { entities: [mockDocument], total: 1 };
       jest.spyOn(service, 'findManyWithPagination').mockResolvedValue(result);
 
-      await expect(controller.findAll({ page: 1, limit: 10 })).resolves.toStrictEqual({
+      await expect(
+        controller.findAll({ page: 1, limit: 10 }),
+      ).resolves.toStrictEqual({
         data: result.entities,
         hasNextPage: false,
       });
@@ -90,9 +108,9 @@ describe('DocumentsController', () => {
       const result = { ...mockDocument, ...updateDocumentDto };
       jest.spyOn(service, 'update').mockResolvedValue(result);
 
-      await expect(controller.update(1, updateDocumentDto)).resolves.toBe(
-        result,
-      );
+      await expect(
+        controller.update(1, updateDocumentDto, mockUser),
+      ).resolves.toBe(result);
     });
   });
 
@@ -100,7 +118,7 @@ describe('DocumentsController', () => {
     it('should remove a document', async () => {
       jest.spyOn(service, 'remove').mockResolvedValue(true);
 
-      await expect(controller.remove(1)).resolves.toBe(true);
+      await expect(controller.remove(1, mockUser)).resolves.toBe(true);
     });
   });
 });
