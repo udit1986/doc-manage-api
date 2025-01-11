@@ -34,7 +34,7 @@ $ npm install
 
 Generate the migration script and run it to create the tables in database
 ```bash
-$ npm run typeorm:generate-migration src/migrations/CreatUsersTable
+$ npm run typeorm:generate-migration src/db/migrations/CreatUsersTable
 $ npm run typeorm:run-migrations
 ```
 

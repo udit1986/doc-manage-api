@@ -1,2 +1,2 @@
-export * from './Hash';
+export * from './hash';
 export * from './infinity-pagination';
