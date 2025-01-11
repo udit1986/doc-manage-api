@@ -14,7 +14,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  @ApiResponse({ status: 201, description: 'Successful Login' })
+  @ApiResponse({ status: 200, description: 'Successful Login' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async login(@Body() payload: LoginDto): Promise<any> {
@@ -23,7 +23,7 @@ export class AuthController {
   }
 
   @Post('register')
-  @ApiResponse({ status: 201, description: 'Successful Registration' })
+  @ApiResponse({ status: 200, description: 'Successful Registration' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async register(@Body() payload: RegisterDto): Promise<any> {

@@ -34,6 +34,8 @@ export class UsersService {
     return await this.userRepository.save({
       ...payload,
       role: RoleEnum.viewer,
+      createdBy: "-1",
+      lastChangedBy: "-1",
     });
   }
 
