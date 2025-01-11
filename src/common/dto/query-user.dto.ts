@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { Transform, Type, plainToInstance } from 'class-transformer';
 import { RoleDto } from './role.dto';
-import { User } from 'src/users/users.entity';
+import { User } from '../../users/users.entity';
 
 export class FilterUserDto {
   @ApiPropertyOptional({ type: RoleDto })
