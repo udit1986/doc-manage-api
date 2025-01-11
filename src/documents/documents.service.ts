@@ -44,7 +44,12 @@ export class DocumentsService {
     return await this.documentRepository.findOne({ where: { id } });
   }
 
-  async remove(id: number): Promise<void> {
-    await this.documentRepository.delete(id);
+  async remove(id: number): Promise<boolean> {
+    try {
+      await this.documentRepository.delete(id);
+      return true;
+    } catch (_error) {
+      return false;
+    }
   }
 }
