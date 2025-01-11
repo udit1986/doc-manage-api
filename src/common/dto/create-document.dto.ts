@@ -16,8 +16,8 @@ export class CreateDocumentDto {
   @IsString()
   @IsNotEmpty()
   author: string;
-  
-  @ApiProperty()
-  @IsString()
-  filePath?: string;
+
+  lastChangedBy?: string;
+  createdBy?: string;
+
 }
