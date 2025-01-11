@@ -32,10 +32,6 @@ export class User extends BaseEntity {
   @Column({ type: 'int', default: 3 })
   role: number;
 
-  toJSON() {
-    const { password, ...self } = this;
-    return self;
-  }
 }
 
 export class UserFillableFields {
