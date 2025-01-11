@@ -3,6 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { PasswordTransformer } from './password.transformer';
 import { BaseEntity } from '../common/entity/base.entity';
 
@@ -27,6 +28,7 @@ export class User extends BaseEntity {
     length: 255,
     transformer: new PasswordTransformer(),
   })
+  @Exclude()
   password: string;
 
   @Column({ type: 'int', default: 3 })
