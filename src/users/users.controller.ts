@@ -5,28 +5,37 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User, UsersService } from '../users';
+import { UsersService } from './users.service';
+import { User } from './users.entity';
 import { RoleEnum, Roles, RolesGuard } from '../roles';
 import { infinityPagination } from '../common/utils';
 import {
   InfinityPaginationResponseDto,
   UpdateUserDto,
   QueryUserDto,
-} from 'src/common/dto';
+} from '../common/dto';
+import { CurrentUser } from '../common/decorator/current-user.decorator';
 
 @ApiBearerAuth()
 @Controller('api/users')
 @Roles(RoleEnum.admin)
-@UseGuards(AuthGuard(), RolesGuard)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get(':id')
+  @ApiParam({ name: 'id', type: 'number', description: 'User ID' })
+  get(@Param('id', new ParseIntPipe()) id: number): Promise<User> {
+    return this.usersService.findOne(id);
+  }
 
   @Patch(':id')
   @ApiParam({ name: 'id', type: 'number', description: 'User ID' })
@@ -37,7 +46,9 @@ export class UsersController {
   update(
     @Param('id') id: User['id'],
     @Body() updateProfileDto: UpdateUserDto,
+    @CurrentUser() user: User,
   ): Promise<User | null> {
+    updateProfileDto.lastChangedBy = user.id.toString();
     return this.usersService.update(id, updateProfileDto);
   }
 

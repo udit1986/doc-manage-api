@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { User, UserFillableFields } from './users.entity';
-import { FilterUserDto, SortUserDto, UpdateUserDto } from 'src/common/dto';
-import { IPaginationOptions } from 'src/common/utils/types/pagination-options';
-import { RoleEnum } from 'src/roles';
+import { FilterUserDto, SortUserDto, UpdateUserDto } from '../common/dto';
+import { IPaginationOptions } from '../common/utils/types/pagination-options';
+import { RoleEnum } from '../roles';
 
 @Injectable()
 export class UsersService {
@@ -34,6 +34,8 @@ export class UsersService {
     return await this.userRepository.save({
       ...payload,
       role: RoleEnum.viewer,
+      createdBy: "-1",
+      lastChangedBy: "-1",
     });
   }
 
