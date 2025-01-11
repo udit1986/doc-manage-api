@@ -6,6 +6,9 @@ import { IngestionModule } from './ingestion/ingestion.module';
 import { BaseAppModule } from './app/app.module';
 import { ConfigModule, ConfigService } from './config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
+import { ResponseTransformInterceptor, ErrorsInterceptor } from './common/interceptors';
+import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './common/filters';
 
 @Module({
   imports: [
@@ -30,7 +33,21 @@ import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
     UsersModule,
     DocumentsModule,
     IngestionModule,
-    BaseAppModule
+    BaseAppModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseTransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorsInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
   ],
 })
 export class AppModule {}
