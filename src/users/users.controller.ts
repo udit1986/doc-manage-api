@@ -18,7 +18,7 @@ import {
   InfinityPaginationResponseDto,
   UpdateUserDto,
   QueryUserDto,
-} from 'src/common/dto';
+} from '../common/dto';
 
 @ApiBearerAuth()
 @Controller('api/users')
